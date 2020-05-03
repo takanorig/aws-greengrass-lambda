@@ -11,6 +11,7 @@ logger.setLevel(logging.INFO)
 class PisysMonitor:
     """
     Raspberry Pi のシステム情報をモニタリングを行います。
+    Greengrass の Lambda 設定で「/sys ディレクトリへの読み込みアクセス」を有効化する必要があります。
     """
 
     def __init__(self, client=None):
@@ -35,10 +36,16 @@ class PisysMonitor:
         システムのハードウェア情報を測定し、結果を Greengrass Core へ通知します。
         """
 
-        topic = 'takanorig/gg_example/%s/monitor' % os.uname()[1]
+        # Greengrass上では、ホスト名が 'sandbox' になるため、環境変数から取得する。
+        hostname = os.getenv('AWS_IOT_THING_NAME', None)
+        if hostname is None:
+            hostname = os.uname().nodename
+
+        topic = 'takanorig/gg_example/%s/monitor' % hostname
         payload = self._measure_utilities()
 
         logging.info('Monitor result: %s', payload)
+        logging.info('Monitor result: topic=%s, payload=%s', topic, payload)
 
         try:
             self.__client.publish(topic=topic, payload=json.dumps(payload))
@@ -56,13 +63,15 @@ class PisysMonitor:
         cpu_usage = psutil.cpu_percent(interval=1)
         # CPU温度
         try:
-            cpu_temp = psutil.sensors_temperatures()['coretemp']
-        except AttributeError as err:
+            import gpiozero
+            cpu_temp = gpiozero.CPUTemperature().temperature
+        except Exception as err:
             cpu_temp = None
-        # ディスク使用率
-        disk_usage = psutil.disk_usage(path='/').percent
         # メモリ使用量
         memory_usage = psutil.virtual_memory().percent
+        # ディスク使用率
+        # TODO Greengrass上だと0になってしまう。
+        disk_usage = psutil.disk_usage(path='/').percent
 
         utilities = {
             'cpu_usage': cpu_usage,

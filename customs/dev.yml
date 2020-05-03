@@ -1,0 +1,14 @@
+# provider
+deployRegion: us-west-2
+profile: takanorig
+retentionInDays: 3
+
+# load package
+pythonRequirements:
+#    usePipenv: true
+    fileName: ../requirements.txt
+
+# serverless-prune-plugin
+prune:
+    automatic: true
+    number: 3
