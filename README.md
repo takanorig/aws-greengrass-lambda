@@ -19,7 +19,8 @@ Example Lambda functions for AWS Greengrass.
 
 ```
 sudo apt install python3-gpiozero
+sudo apt install python3-psutil
 
 pip install greengrasssdk
-pip install psutil
 ```
+
