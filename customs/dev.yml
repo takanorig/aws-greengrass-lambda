@@ -3,7 +3,7 @@ deployRegion: us-west-2
 profile: takanorig
 retentionInDays: 3
 
-# load package
+# serverless-python-requirements
 pythonRequirements:
     fileName: ../requirements.txt
 
@@ -11,3 +11,14 @@ pythonRequirements:
 prune:
     automatic: true
     number: 3
+
+# serverless-plugin-greengrass
+greengrass:
+    groupId: 3c7c035b-c671-4815-9652-25d1b63844c8
+    autoDeploy: false
+    deployTimeout: 30
+    defaults:
+        pinned: false
+        memorySize: 16384  # 16 MB expressed in KB
+        timeout: 15
+        encodingType: json
