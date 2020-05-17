@@ -41,7 +41,7 @@ class PisysMonitor:
         if hostname is None:
             hostname = os.uname().nodename
 
-        topic = 'takanorig/gg_example/%s/monitor' % hostname
+        topic = 'gg_example/%s/monitor' % hostname
         payload = self._measure_utilities()
 
         logging.info('Monitor result: %s', payload)
