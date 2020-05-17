@@ -3,7 +3,7 @@ deployRegion: us-west-2
 profile: takanorig
 retentionInDays: 3
 
-# load package
+# serverless-python-requirements
 pythonRequirements:
     fileName: ../requirements.txt
 
