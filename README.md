@@ -70,8 +70,8 @@ profile: {your aws profile}
 ```
 
 - `services/gg-functions/serverless.yml`
-```yaml
     - Raspberry Pi側で動作するLambdaの定義に利用されます。
+```yaml
 custom:
   # provider
   deployRegion: {your aws region}
