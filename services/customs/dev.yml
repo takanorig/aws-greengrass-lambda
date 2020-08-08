@@ -1,13 +1,16 @@
 # provider
 deployRegion: us-west-2
 profile: takanorig
-retentionInDays: 3
+
+# properties
+properties:
+  retentionInDays: 3
 
 # serverless-python-requirements
 pythonRequirements:
-    fileName: ../requirements.txt
+  fileName: ../requirements.txt
 
 # serverless-prune-plugin
 prune:
-    automatic: true
-    number: 3
+  automatic: true
+  number: 3

@@ -1,21 +1,35 @@
 {
     "files.encoding": "utf8",
     "files.eol": "\n",
-    "files.trimTrailingWhitespace": true,
     "files.insertFinalNewline": true,
-    "editor.wordWrapColumn": 120,
+    "files.trimTrailingWhitespace": true,
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": false,
     "editor.renderWhitespace": "all",
-    "editor.insertSpaces": true,
-    "editor.detectIndentation": true,
-    "editor.tabSize": 4,
+    "editor.wordWrapColumn": 120,
+    "[python]": {
+        "editor.insertSpaces": true,
+        "editor.detectIndentation": true,
+        "editor.tabSize": 4
+    },
+    "python.formatting.provider": "autopep8",
+    "python.formatting.autopep8Args": [],
+    "python.linting.pylintEnabled": false,
+    "python.linting.pycodestyleEnabled": false,
+    "python.linting.flake8Enabled": true,
+    "python.linting.flake8Args": [
+        "--max-line-length=120",
+    ],
+    "python.linting.lintOnSave": true,
+    "python.testing.pytestEnabled": false,
+    "python.testing.nosetestsEnabled": false,
+    "python.testing.unittestEnabled": true,
     "python.testing.unittestArgs": [
         "-v",
         "-s",
-        "functions",
+        "./services",
         "-p",
         "test_*.py"
     ],
-    "python.testing.pytestEnabled": false,
-    "python.testing.nosetestsEnabled": false,
-    "python.testing.unittestEnabled": true
+    "python.venvPath": ".venv",
 }

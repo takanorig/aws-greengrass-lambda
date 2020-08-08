@@ -3,7 +3,7 @@ import boto3
 
 from moto import mock_iot, mock_iotdata
 
-from pisysmonitor.pisys_monitor import PisysMonitor
+from pisys_monitor import PisysMonitor
 
 
 @mock_iot
