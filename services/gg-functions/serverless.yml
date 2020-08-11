@@ -1,0 +1,69 @@
+custom:
+  # provider
+  deployRegion: us-west-2
+  profile: takanorig
+
+  # properties
+  properties:
+    retentionInDays: 3
+
+  # serverless-python-requirements
+  pythonRequirements:
+    fileName: ../requirements.txt
+
+  # serverless-prune-plugin
+  prune:
+    automatic: true
+    number: 3
+
+  # serverless-plugin-greengrass
+  # Can't define to custom-file.
+  greengrass:
+    # TODO: Set Greengrass Group ID from AWS Console
+    groupId: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    autoDeploy: false
+    deployTimeout: 30
+    defaults:
+      pinned: false
+      memorySize: 16384 # 16 MB expressed in KB
+      timeout: 15
+      encodingType: json
+
+# サービス名
+service: iot-gg-example-gg-functions
+
+provider:
+  name: aws
+  runtime: python3.7
+  stage: ${opt:stage, 'dev'}
+  region: ${self:custom.deployRegion}
+  profile: ${self:custom.profile}
+  logRetentionInDays: ${self:custom.properties.retentionInDays}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "lambda:InvokeFunction"
+      Resource: "*"
+
+package:
+  exclude:
+    - tests/**
+    - node_modules/**
+    - .venv/**
+
+plugins:
+  - serverless-prune-plugin
+  - serverless-python-requirements
+  - serverless-plugin-greengrass
+
+# 関数定義
+functions:
+  pisys_monitor:
+    handler: pisys_monitor_gg_handler.function_handler
+    description: Monitor system resources on Greengrass
+    greengrass:
+      pinned: true
+      accessSysfs: true
+      subscriptions:
+        - target: "cloud"
+          subject: gg-example/#

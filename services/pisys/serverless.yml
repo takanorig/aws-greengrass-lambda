@@ -1,0 +1,47 @@
+custom: ${file(../customs/${opt:stage, 'dev'}.yml)}
+
+service: iot-gg-example-pisys
+
+provider:
+  name: aws
+  runtime: python3.7
+  stage: ${opt:stage, 'dev'}
+  region: ${self:custom.deployRegion}
+  profile: ${self:custom.profile}
+  logRetentionInDays: ${self:custom.properties.retentionInDays}
+  timeout: 10
+  memorySize: 256
+  tracing:
+    lambda: true
+  iamRoleStatements:
+    - Effect: "Allow"
+      Resource: "*"
+      Action:
+        - "lambda:InvokeFunction"
+        - "xray:PutTraceSegments"
+        - "xray:PutTelemetryRecords"
+        - "dynamodb:GetItem"
+        - "dynamodb:PutItem"
+        - "dynamodb:UpdateItem"
+        - "dynamodb:Query"
+
+package:
+  exclude:
+    - tests/**
+    - node_modules/**
+    - .venv/**
+
+plugins:
+  - serverless-prune-plugin
+  - serverless-python-requirements
+
+# 関数定義
+functions:
+  pisys_save_messages:
+    handler: pisys_handler.save_message_handler
+    description: Save message from IoT Core
+    events:
+      - iot:
+          name: invoke_lambda_pisys
+          description: Invoke Lambda
+          sql: "SELECT clientid() AS device_id, timestamp() AS timestamp, * FROM 'gg-example/+/monitor'"

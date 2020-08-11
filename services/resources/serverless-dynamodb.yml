@@ -1,0 +1,30 @@
+custom: ${file(../customs/${opt:stage, 'dev'}.yml)}
+
+service: iot-gg-example-dynamodb
+
+provider:
+  name: aws
+  stage: ${opt:stage, 'dev'}
+  region: ${self:custom.deployRegion}
+  profile: ${self:custom.profile}
+
+resources:
+  Resources:
+    DynamoDB:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        # Raspberry Pi のモニター情報
+        #   HashKey: デバイスID
+        #   RangeKey: 登録日時
+        TableName: iot-gg-example-pisys-monitoring
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: device_id
+            AttributeType: S
+          - AttributeName: register_timestamp
+            AttributeType: S
+        KeySchema:
+          - AttributeName: device_id
+            KeyType: HASH
+          - AttributeName: register_timestamp
+            KeyType: RANGE

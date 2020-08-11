@@ -22,7 +22,7 @@ class PisysMonitor:
                 import greengrasssdk
                 iotdata = greengrasssdk.client('iot-data')
                 logger.info('Use greengrasssdk.')
-            except:
+            except Exception:
                 import boto3
                 iotdata = boto3.client('iot-data')
                 logger.info('Use boto3.')
@@ -41,15 +41,14 @@ class PisysMonitor:
         if hostname is None:
             hostname = os.uname().nodename
 
-        topic = 'gg_example/%s/monitor' % hostname
+        topic = 'gg-example/%s/monitor' % hostname
         payload = self._measure_utilities()
 
-        logging.info('Monitor result: %s', payload)
-        logging.info('Monitor result: topic=%s, payload=%s', topic, payload)
+        logger.info('Monitor result: topic=%s, payload=%s', topic, payload)
 
         try:
             self.__client.publish(topic=topic, payload=json.dumps(payload))
-        except Exception as err:
+        except Exception:
             logger.exception('Failed to publish message. : topic=%s', topic)
 
     def _measure_utilities(self):
@@ -65,12 +64,13 @@ class PisysMonitor:
         try:
             import gpiozero
             cpu_temp = gpiozero.CPUTemperature().temperature
-        except Exception as err:
+        except Exception:
             cpu_temp = None
         # メモリ使用量
         memory_usage = psutil.virtual_memory().percent
         # ディスク使用率
-        # TODO Greengrass上だと0になってしまう。
+        # 取得する場合は Greengrass Lambda の設定で「コンテナなし」にする。
+        # Greengrassコンテナ上でLambdaを動作させている場合は、ディスク使用率が0になる。
         disk_usage = psutil.disk_usage(path='/').percent
 
         utilities = {
